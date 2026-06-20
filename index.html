@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TuPOS — El sistema de punto de venta para tu restaurante</title>
+  <meta name="description" content="Sistema de punto de venta sin costo mensual, en español, sin contrato. Listo en 30 minutos. Para taquerías, food trucks y restaurantes en Houston, TX.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ─── TOKENS ──────────────────────────────────────────────── */
+    :root {
+      --terra:   #C2602A;
+      --terra-l: #E8954A;
+      --terra-d: #9C4A1F;
+      --dark:    #2C2014;
+      --dark-m:  #4A3728;
+      --green:   #1D9E75;
+      --cream:   #FAF6F0;
+      --muted:   #8A7B68;
+      --border:  #E8DDD2;
+      --white:   #FFFFFF;
+      --r:       10px;
+      --r-lg:    18px;
+    }
+
+    /* ─── RESET ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', Arial, sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    svg.icon { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,246,240,0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo { font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; }
+    .nav-logo span { color: var(--terra); }
+    .nav-cta {
+      background: var(--terra); color: var(--white);
+      font-size: 14px; font-weight: 600;
+      padding: 9px 20px; border-radius: 50px;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--terra-d); }
+
+    /* ─── HERO ────────────────────────────────────────────────── */
+    .hero { padding: 76px 5% 70px; background: var(--dark); position: relative; overflow: hidden; }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 78% 40%, rgba(194,96,42,0.20) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px; align-items: center; max-width: 1280px; margin: 0 auto;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(250,246,240,0.7); font-size: 13px; font-weight: 500;
+      padding: 6px 14px; border-radius: 50px; margin-bottom: 32px; width: fit-content; letter-spacing: 0.3px;
+    }
+    .hero-tag .dot { width:7px; height:7px; border-radius:50%; background: var(--green); flex-shrink:0; }
+    .hero h1 {
+      font-size: clamp(38px, 5.5vw, 72px); font-weight: 800; line-height: 1.04;
+      letter-spacing: -1.5px; color: var(--cream); margin-bottom: 24px;
+    }
+    .hero h1 em { color: var(--terra-l); font-style: normal; }
+    .hero p.sub {
+      font-size: clamp(16px, 1.6vw, 19px); color: rgba(250,246,240,0.65);
+      max-width: 480px; margin-bottom: 38px; font-weight: 400; line-height: 1.55;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--terra); color: var(--white);
+      font-size: 16px; font-weight: 700; padding: 16px 30px; border-radius: 50px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--terra-l); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: rgba(250,246,240,0.6); font-size: 15px; font-weight: 500;
+      padding: 16px 4px; border-bottom: 1px solid rgba(250,246,240,0.25);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { color: var(--cream); border-color: var(--cream); }
+    .hero-stats {
+      display: flex; gap: 32px; flex-wrap: wrap; margin-top: 56px; padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat .num { font-size: 30px; font-weight: 800; color: var(--terra-l); line-height: 1; }
+    .stat .lbl { font-size: 12.5px; color: rgba(250,246,240,0.5); margin-top: 4px; font-weight: 400; }
+
+    /* ─── HERO DEVICE MOCKUP ──────────────────────────────────── */
+    .device-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
+    .device-glow {
+      position: absolute; width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(194,96,42,0.35) 0%, transparent 70%);
+      filter: blur(20px); z-index: 0;
+    }
+    .device-frame {
+      position: relative; z-index: 1; width: 280px; background: #14100B;
+      border-radius: 32px; padding: 10px;
+      box-shadow: 0 30px 70px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
+      transform: rotate(2deg);
+    }
+    .device-screen { width: 100%; border-radius: 22px; overflow: hidden; background: #000; }
+    .device-screen img { width: 100%; display: block; }
+    .device-badge {
+      position: absolute; bottom: -16px; left: -22px; z-index: 2;
+      background: var(--white); border-radius: 14px; padding: 12px 16px;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.25);
+      display: flex; align-items: center; gap: 10px; transform: rotate(-3deg);
+    }
+    .device-badge .ic {
+      width: 34px; height: 34px; background: var(--green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .device-badge .ic svg { width: 16px; height: 16px; stroke: white; stroke-width: 3; }
+    .device-badge .txt { line-height: 1.25; }
+    .device-badge .txt b { font-size: 13px; color: var(--dark); display: block; }
+    .device-badge .txt span { font-size: 11px; color: var(--muted); }
+
+    /* ─── SECTION SHELL ───────────────────────────────────────── */
+    section { padding: 90px 5%; }
+    .section-inner { max-width: 1280px; margin: 0 auto; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--terra); margin-bottom: 16px;
+    }
+    h2 {
+      font-size: clamp(28px, 4.5vw, 48px); font-weight: 800; letter-spacing: -1px;
+      line-height: 1.1; color: var(--dark); margin-bottom: 16px;
+    }
+    .lead { font-size: 18px; color: var(--muted); max-width: 560px; font-weight: 400; line-height: 1.6; margin-bottom: 52px; }
+
+    /* ─── BENEFITS ────────────────────────────────────────────── */
+    .benefits { background: var(--cream); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .benefit-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 30px 26px; transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .benefit-card:hover { box-shadow: 0 12px 40px rgba(44,32,20,0.1); transform: translateY(-3px); }
+    .benefit-icon {
+      width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center;
+      justify-content: center; margin-bottom: 18px; background: #FFF0E8; color: var(--terra);
+    }
+    .benefit-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; line-height: 1.25; }
+    .benefit-card p { font-size: 14.5px; color: var(--muted); line-height: 1.6; }
+
+    /* ─── CÓMO FUNCIONA ───────────────────────────────────────── */
+    .how { background: var(--dark); }
+    .how .section-tag { color: var(--terra-l); }
+    .how h2 { color: var(--cream); }
+    .how .lead { color: rgba(250,246,240,0.55); }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2px;
+      background: rgba(255,255,255,0.07); border-radius: var(--r-lg); overflow: hidden;
+    }
+    .step { padding: 38px 30px; background: rgba(44,32,20,0.6); position: relative; }
+    .step-num { font-size: 11px; font-weight: 800; letter-spacing: 2px; color: var(--terra-l); opacity: 0.7; margin-bottom: 18px; }
+    .step h3 { font-size: 19px; font-weight: 700; color: var(--cream); margin-bottom: 10px; }
+    .step p { font-size: 13.5px; color: rgba(250,246,240,0.5); line-height: 1.6; }
+    .step-check {
+      width: 30px; height: 30px; background: var(--green); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin-top: 22px;
+    }
+    .step-check svg { width: 14px; height: 14px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ─── FEE TRANSPARENCY ────────────────────────────────────── */
+    .fee-section { background: var(--cream); }
+    .calc-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 40px; display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 44px; align-items: start;
+    }
+    .calc-inputs label {
+      display: block; font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--muted); margin-bottom: 10px; margin-top: 24px;
+    }
+    .calc-inputs label:first-child { margin-top: 0; }
+    .calc-slider-row { display: flex; align-items: center; gap: 14px; }
+    .calc-slider-row input[type="range"] {
+      flex: 1; height: 5px; border-radius: 3px; appearance: none; background: var(--border); outline: none;
+    }
+    .calc-slider-row input[type="range"]::-webkit-slider-thumb {
+      appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--terra);
+      cursor: pointer; border: 3px solid var(--white); box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .calc-slider-row input[type="range"]::-moz-range-thumb {
+      width: 20px; height: 20px; border-radius: 50%; background: var(--terra);
+      cursor: pointer; border: 3px solid var(--white); box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .calc-val { font-size: 17px; font-weight: 800; color: var(--dark); min-width: 78px; text-align: right; }
+    .calc-note { margin-top: 22px; font-size: 12.5px; color: var(--muted); line-height: 1.6; }
+    .calc-results { display: flex; flex-direction: column; gap: 10px; }
+    .calc-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-radius: var(--r); border: 1px solid var(--border); background: var(--cream);
+    }
+    .calc-row.win { background: #FFF0E8; border-color: #F2C49E; }
+    .calc-row .name { font-size: 14.5px; font-weight: 700; color: var(--dark); }
+    .calc-row .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .calc-row .amount { font-size: 19px; font-weight: 800; color: var(--dark); }
+    .calc-row.win .amount { color: var(--terra); }
+    .calc-savings {
+      margin-top: 6px; padding: 18px 22px; background: var(--dark); border-radius: var(--r);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .calc-savings .lbl { font-size: 13.5px; color: rgba(250,246,240,0.65); }
+    .calc-savings .val { font-size: 26px; font-weight: 800; color: var(--terra-l); }
+    .calc-disclaimer {
+      margin-top: 28px; padding: 16px 20px; background: #FFF8F4; border: 1px solid #F2DCC9;
+      border-radius: var(--r); font-size: 13px; color: var(--dark-m); line-height: 1.6;
+    }
+    .calc-disclaimer b { color: var(--terra); }
+
+    /* ─── COMPARACIÓN ─────────────────────────────────────────── */
+    .compare { background: var(--cream); }
+    .compare-table { border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; font-size: 14px; }
+    .compare-head {
+      display: grid; grid-template-columns: 2fr 1.1fr 1fr 1fr 1fr; background: var(--dark);
+      padding: 16px 24px; color: var(--cream); font-weight: 700; font-size: 13px; letter-spacing: 0.2px;
+    }
+    .compare-head .col-tupos { color: var(--terra-l); }
+    .compare-row {
+      display: grid; grid-template-columns: 2fr 1.1fr 1fr 1fr 1fr; padding: 16px 24px;
+      border-bottom: 1px solid var(--border); align-items: center; background: var(--white); transition: background 0.15s;
+    }
+    .compare-row:last-child { border-bottom: none; }
+    .compare-row:hover { background: #FFF8F4; }
+    .compare-row .feature { font-weight: 500; color: var(--dark); font-size: 14px; }
+    .compare-row .col { text-align: center; }
+    .yes { color: var(--green); font-weight: 700; }
+    .no  { color: #B0452F; font-weight: 600; font-size: 13px; }
+    .val { color: var(--muted); font-size: 13px; font-weight: 500; }
+    .val.highlight { color: var(--terra); font-weight: 700; font-size: 14px; }
+    .yes svg, .no svg { width: 17px; height: 17px; vertical-align: -3px; stroke-width: 2.5; }
+
+    /* ─── PARA QUIÉN ──────────────────────────────────────────── */
+    .for-who { background: var(--dark); }
+    .for-who .section-tag { color: var(--terra-l); }
+    .for-who h2 { color: var(--cream); }
+    .for-who .lead { color: rgba(250,246,240,0.55); }
+    .biz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+    .biz-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--r-lg);
+      padding: 26px 20px; text-align: center; transition: background 0.2s, border-color 0.2s;
+    }
+    .biz-card:hover { background: rgba(194,96,42,0.12); border-color: rgba(194,96,42,0.35); }
+    .biz-icon {
+      width: 42px; height: 42px; margin: 0 auto 14px; background: rgba(232,149,74,0.15);
+      border-radius: 11px; display: flex; align-items: center; justify-content: center; color: var(--terra-l);
+    }
+    .biz-card h4 { font-size: 14.5px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .biz-card p { font-size: 12px; color: rgba(250,246,240,0.45); line-height: 1.5; }
+
+    /* ─── ZONAS HOUSTON ───────────────────────────────────────── */
+    .zones { background: var(--cream); }
+    .zones-wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+    .zone-chip {
+      display: inline-flex; align-items: center; gap: 8px; background: var(--white);
+      border: 1px solid var(--border); border-radius: 50px; padding: 11px 20px 11px 14px;
+      font-size: 14px; font-weight: 600; color: var(--dark);
+    }
+    .zone-chip .dot-ic {
+      width: 26px; height: 26px; border-radius: 50%; background: #FFF0E8; color: var(--terra);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .zone-chip .dot-ic svg { width: 14px; height: 14px; }
+    .zones-note { margin-top: 24px; font-size: 14px; color: var(--muted); }
+    .zones-note a { color: var(--terra); font-weight: 700; border-bottom: 1.5px solid currentColor; }
+
+    /* ─── TESTIMONIOS (placeholder, oculto hasta tener contenido real) ── */
+    .testimonials { display: none; }
+
+    /* ─── FAQ ─────────────────────────────────────────────────── */
+    .faq { background: var(--cream); }
+    .faq-list { display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+    .faq-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+    .faq-q {
+      width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 20px 24px; cursor: pointer; background: none; border: none; font-family: inherit; text-align: left;
+    }
+    .faq-q span { font-size: 16px; font-weight: 600; color: var(--dark); }
+    .faq-q .chev { flex-shrink: 0; color: var(--terra); transition: transform 0.25s; }
+    .faq-item[data-open="true"] .faq-q .chev { transform: rotate(180deg); }
+    .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; padding: 0 24px; }
+    .faq-item[data-open="true"] .faq-a { max-height: 240px; padding: 0 24px 22px; }
+    .faq-a p { font-size: 14.5px; color: var(--muted); line-height: 1.65; }
+
+    /* ─── CTA BAND ────────────────────────────────────────────── */
+    .cta-band { background: var(--terra); padding: 80px 5%; text-align: center; }
+    .cta-band h2 { color: var(--white); font-size: clamp(28px, 5vw, 52px); margin-bottom: 14px; letter-spacing: -1px; }
+    .cta-band p { color: rgba(255,255,255,0.8); font-size: 18px; margin-bottom: 36px; }
+    .btn-white {
+      display: inline-flex; align-items: center; gap: 10px; background: var(--white); color: var(--terra);
+      font-size: 16px; font-weight: 700; padding: 16px 32px; border-radius: 50px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-white:hover { background: var(--cream); transform: translateY(-2px); }
+
+    /* ─── CONTACT ─────────────────────────────────────────────── */
+    .contact { background: var(--cream); text-align: center; }
+    .contact .section-inner { display: flex; flex-direction: column; align-items: center; }
+    .contact h2 { margin-bottom: 10px; }
+    .contact .lead { margin: 0 auto 44px; text-align: center; }
+    .contact-options { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .contact-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 30px 34px; min-width: 220px; text-align: center; transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .contact-card:hover { box-shadow: 0 8px 32px rgba(44,32,20,0.1); transform: translateY(-2px); }
+    .contact-icon {
+      width: 44px; height: 44px; margin: 0 auto 14px; background: #FFF0E8; color: var(--terra);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    }
+    .contact-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .contact-card p { font-size: 13px; color: var(--muted); }
+    .contact-card a.link-cta {
+      display: inline-block; margin-top: 14px; color: var(--terra); font-weight: 700; font-size: 14px;
+      border-bottom: 2px solid currentColor; padding-bottom: 1px; transition: opacity 0.2s;
+    }
+    .contact-card a.link-cta:hover { opacity: 0.75; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────── */
+    footer { background: var(--dark); padding: 40px 5%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    footer .f-logo { font-size: 20px; font-weight: 800; color: var(--cream); }
+    footer .f-logo span { color: var(--terra-l); }
+    footer p { font-size: 13px; color: rgba(250,246,240,0.35); }
+    footer nav { background: none; border: none; padding: 0; height: auto; position: static; backdrop-filter: none; }
+    footer nav a { font-size: 13px; color: rgba(250,246,240,0.5); margin-left: 24px; }
+    footer nav a:hover { color: var(--cream); }
+
+    /* ─── WA FLOAT ────────────────────────────────────────────── */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 99; width: 58px; height: 58px;
+      background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.4); transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.5); }
+    .wa-float svg { width: 28px; height: 28px; fill: white; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .device-wrap { order: -1; margin-bottom: 8px; }
+      .device-frame { transform: rotate(0); width: 230px; }
+      .device-badge { left: 50%; transform: translateX(-50%) rotate(0); bottom: -14px; }
+      .calc-card { grid-template-columns: 1fr; gap: 30px; }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 0 4%; }
+      section { padding: 64px 4%; }
+      .hero { padding: 56px 4% 48px; }
+      .hero-stats { gap: 22px; margin-top: 40px; padding-top: 26px; }
+      .compare-table { overflow-x: auto; }
+      .compare-head, .compare-row { grid-template-columns: 1.8fr 1fr 1fr 1fr 1fr; min-width: 560px; }
+      .contact-options { flex-direction: column; align-items: center; }
+      footer { flex-direction: column; text-align: center; }
+      footer nav { margin-top: 8px; }
+      footer nav a { margin: 0 10px; }
+      .calc-card { padding: 26px 22px; }
+      .calc-savings .val { font-size: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-logo">Tu<span>POS</span></div>
+    <a class="nav-cta" href="https://wa.me/18322533555?text=Hola%2C%20vi%20su%20p%C3%A1gina%20web%20y%20me%20interesa%20saber%20m%C3%A1s%20sobre%20TuPOS." target="_blank" rel="noopener">
+      Hablar con nosotros →
+    </a>
+  </nav>
+
+  <section class="hero" id="inicio">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-tag"><span class="dot"></span>Houston, TX · Atendemos en español</div>
+        <h1>Tu restaurante merece<br>un POS <em>sin costo mensual.</em></h1>
+        <p class="sub">Sistema de punto de venta listo en 30 minutos, en tu idioma, sin contrato. Acepta tarjetas hoy mismo.</p>
+        <div class="hero-btns">
+          <a class="btn-primary" href="https://wa.me/18322533555?text=Hola%2C%20quiero%20instalar%20TuPOS%20en%20mi%20restaurante." target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.549 4.12 1.512 5.855L0 24l6.335-1.493A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.875 9.875 0 01-5.031-1.374l-.361-.214-3.741.882.936-3.632-.235-.374A9.856 9.856 0 012.118 12C2.118 6.533 6.533 2.118 12 2.118S21.882 6.533 21.882 12 17.467 21.882 12 21.882z"/></svg>
+            Quiero instalarlo gratis
+          </a>
+          <a class="btn-secondary" href="#como-funciona">Ver cómo funciona ↓</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><div class="num">$0</div><div class="lbl">costo mensual del software</div></div>
+          <div class="stat"><div class="num">30 min</div><div class="lbl">instalación sin técnico</div></div>
+          <div class="stat"><div class="num">100%</div><div class="lbl">en español</div></div>
+          <div class="stat"><div class="num">0</div><div class="lbl">contratos ni letras pequeñas</div></div>
+        </div>
+      </div>
+
+      <div class="device-wrap">
+        <div class="device-glow"></div>
+        <div class="device-frame">
+          <div class="device-screen">
+            <img src="assets/pos-screenshot.jpeg" alt="Pantalla real del sistema TuPOS mostrando el menú de un restaurante">
+          </div>
+        </div>
+        <div class="device-badge">
+          <div class="ic"><svg viewBox="0 0 24 24" stroke="white" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="txt"><b>Pago aprobado</b><span>Directo a tu cuenta</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="benefits" id="beneficios">
+    <div class="section-inner">
+      <p class="section-tag">Por qué TuPOS</p>
+      <h2>Hecho para tu negocio,<br>no para el de Silicon Valley.</h2>
+      <p class="lead">Square, Toast y Clover cobran mensualidad, te amarran con contratos y el soporte es en inglés. TuPOS no.</p>
+      <div class="benefits-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4-4.5"/></svg></div>
+          <h3>$0 al mes, siempre</h3>
+          <p>Sin cuota mensual de software. Solo pagas el hardware una vez. Nada más, nada oculto.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9c1.5 0 2.9.37 4.14 1.02"/><path d="M21 5l-9 9"/></svg></div>
+          <h3>Sin contrato</h3>
+          <p>Mes a mes. Si no estás satisfecho, lo desinstalamos. Sin penalidades, sin letra pequeña.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <h3>100% en español</h3>
+          <p>El sistema, el soporte y la instalación en tu idioma. Por WhatsApp, cuando lo necesites.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h3>Listo en 30 minutos</h3>
+          <p>Sin técnico, sin citas, sin esperar. Nosotros vamos a tu negocio y lo dejamos funcionando.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+          <h3>Acepta todas las tarjetas</h3>
+          <p>Visa, Mastercard, American Express, Apple Pay, Google Pay. El dinero en tu cuenta al día siguiente.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg></div>
+          <h3>Soporte por WhatsApp</h3>
+          <p>¿Algo no funciona? Nos escribes y te respondemos. En español. Sin llamadas a call centers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="como-funciona">
+    <div class="section-inner">
+      <p class="section-tag">El proceso</p>
+      <h2>De cero a aceptar<br>tarjetas en 3 pasos.</h2>
+      <p class="lead">Sin papeles, sin técnicos, sin esperas. Así de simple.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">PASO 01</div>
+          <h3>Nos escribes por WhatsApp</h3>
+          <p>Cuéntanos de tu negocio. Te respondemos en minutos y agendamos una visita sin costo ni compromiso.</p>
+          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="step">
+          <div class="step-num">PASO 02</div>
+          <h3>Vamos a tu restaurante</h3>
+          <p>Llevamos el equipo, lo instalamos y configuramos tu menú contigo. En 30 minutos está listo.</p>
+          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+        <div class="step">
+          <div class="step-num">PASO 03</div>
+          <h3>Empiezas a cobrar</h3>
+          <p>Tus clientes pagan con tarjeta, el dinero llega a tu cuenta. Tú controlas todo desde la tablet.</p>
+          <div class="step-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="fee-section" id="como-ganamos">
+    <div class="section-inner">
+      <p class="section-tag">¿Cómo ganamos dinero?</p>
+      <h2>Sin mensualidad no significa<br>gratis para nosotros tampoco.</h2>
+      <p class="lead">Somos claros: cobramos una comisión pequeña solo cuando tú vendes con tarjeta, igual que Visa o Mastercard. Calcula tu ahorro real con tus propios números.</p>
+      <div class="calc-card">
+        <div class="calc-inputs">
+          <label>Ventas mensuales con tarjeta</label>
+          <div class="calc-slider-row">
+            <input type="range" id="calc-ventas" min="2000" max="40000" step="500" value="10000" oninput="calcUpdate()">
+            <span class="calc-val" id="calc-ventas-val">$10,000</span>
+          </div>
+          <label>Ticket promedio por venta</label>
+          <div class="calc-slider-row">
+            <input type="range" id="calc-ticket" min="6" max="60" step="1" value="15" oninput="calcUpdate()">
+            <span class="calc-val" id="calc-ticket-val">$15</span>
+          </div>
+          <p class="calc-note">Ajusta los valores a tu negocio. El cálculo se actualiza al instante con las tarifas publicadas de cada procesador.</p>
+        </div>
+        <div class="calc-results">
+          <div class="calc-row win">
+            <div><div class="name">TuPOS</div><div class="meta">2.7% + 5¢ Stripe · 0.15% + 5¢ TuPOS · $0/mes software</div></div>
+            <div class="amount" id="calc-tupos">$0</div>
+          </div>
+          <div class="calc-row">
+            <div><div class="name">Square (plan Free)</div><div class="meta">2.6% + 15¢ por venta · $0/mes software</div></div>
+            <div class="amount" id="calc-square">$0</div>
+          </div>
+          <div class="calc-row">
+            <div><div class="name">Toast (Starter Kit)</div><div class="meta">3.09% + 15¢ por venta · $0/mes software</div></div>
+            <div class="amount" id="calc-toast">$0</div>
+          </div>
+          <div class="calc-savings">
+            <span class="lbl">Lo que te ahorras al mes vs. Toast</span>
+            <span class="val" id="calc-savings-toast">$0</span>
+          </div>
+        </div>
+      </div>
+      <div class="calc-disclaimer"><b>Con la calculadora:</b> en comisión por transacción, TuPOS y Square quedan muy cerca — a veces Square es un centavo más barato en tickets grandes. Nuestra ventaja real es que nunca pagas mensualidad ni plan superior para acceder a mejores tarifas, y Toast cobra notablemente más por transacción en su plan sin costo. Estos números usan las tarifas públicas de cada proveedor; pueden variar según tu plan o negociación.</div>
+    </div>
+  </section>
+
+  <section class="compare" id="comparacion">
+    <div class="section-inner">
+      <p class="section-tag">Comparación</p>
+      <h2>TuPOS vs la competencia.</h2>
+      <p class="lead">Mira por qué cada vez más restaurantes en Houston están cambiando de sistema.</p>
+      <div class="compare-table">
+        <div class="compare-head">
+          <div></div><div class="col col-tupos">TuPOS</div><div class="col">Square</div><div class="col">Toast</div><div class="col">Clover</div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Costo mensual del software</div>
+          <div class="col"><span class="val highlight">$0</span></div>
+          <div class="col"><span class="val">$0–$60</span></div>
+          <div class="col"><span class="val">$69–$165</span></div>
+          <div class="col"><span class="val">$14–$95</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Comisión por venta en persona</div>
+          <div class="col"><span class="val">2.85% + 10¢</span></div>
+          <div class="col"><span class="val">2.6% + 15¢</span></div>
+          <div class="col"><span class="val">3.09% + 15¢</span></div>
+          <div class="col"><span class="val">2.6% + 10¢</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Plan superior para mejor tarifa</div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg> Nunca necesario</span></div>
+          <div class="col"><span class="no">Desde $49/mes</span></div>
+          <div class="col"><span class="no">Desde $69/mes</span></div>
+          <div class="col"><span class="no">Desde $14.95/mes</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Contrato de permanencia</div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg> Sin contrato</span></div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+          <div class="col"><span class="no">2 años</span></div>
+          <div class="col"><span class="no">3 años</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Soporte en español</div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+          <div class="col"><span class="no">No disponible</span></div>
+          <div class="col"><span class="no">No disponible</span></div>
+          <div class="col"><span class="no">No disponible</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Instalación a domicilio</div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg> Incluida</span></div>
+          <div class="col"><span class="no">No</span></div>
+          <div class="col"><span class="val">Costo extra</span></div>
+          <div class="col"><span class="val">Costo extra</span></div>
+        </div>
+        <div class="compare-row">
+          <div class="feature">Soporte por WhatsApp</div>
+          <div class="col"><span class="yes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+          <div class="col"><span class="no">No</span></div>
+          <div class="col"><span class="no">No</span></div>
+          <div class="col"><span class="no">No</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="for-who" id="para-quien">
+    <div class="section-inner">
+      <p class="section-tag">Para quién es</p>
+      <h2>Si tienes un negocio<br>de comida, es para ti.</h2>
+      <p class="lead">Especialistas en negocios de comida hispanos en Houston que aún no tienen sistema de cobro con tarjeta.</p>
+      <div class="biz-grid">
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M3 11h18M3 11a9 9 0 0118 0M3 11v1a9 9 0 0018 0v-1M8 15v1M16 15v1"/></svg></div>
+          <h4>Taquerías</h4><p>Pedidos rápidos, cocina organizada, cobros sin errores.</p>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><rect x="1" y="9" width="15" height="9" rx="1"/><path d="M16 12h4l3 3v3h-7z"/><circle cx="6" cy="20" r="1.5"/><circle cx="17.5" cy="20" r="1.5"/></svg></div>
+          <h4>Food trucks</h4><p>Cobra con tarjeta en cualquier lugar, sin internet fijo.</p>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+          <h4>Pupuserías</h4><p>Menú simple, turnos rápidos, cuentas siempre claras.</p>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M4 19h16M6 19V9l6-5 6 5v10"/><path d="M10 19v-5h4v5"/></svg></div>
+          <h4>Loncheras</h4><p>Del carrito a la tablet. Clientes satisfechos, tú también.</p>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M3 2v7a4 4 0 004 4h0a4 4 0 004-4V2M7 2v9M3 2h8M17 2v20M17 7c2.5 0 4-1.5 4-4 0-1-.5-1-1-1h-3"/></svg></div>
+          <h4>Restaurantes familiares</h4><p>Mesas, pedidos, cuentas separadas. Todo en una pantalla.</p>
+        </div>
+        <div class="biz-card">
+          <div class="biz-icon"><svg class="icon" viewBox="0 0 24 24" style="width:20px;height:20px;"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg></div>
+          <h4>Cafeterías</h4><p>Órdenes rápidas, clientes en fila sin esperas largas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="zones" id="zonas">
+    <div class="section-inner">
+      <p class="section-tag">Cobertura</p>
+      <h2>Atendemos tu zona<br>en Houston.</h2>
+      <p class="lead">Vamos directo a tu restaurante para la instalación, sin costo de traslado en estas áreas.</p>
+      <div class="zones-wrap">
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Barker Cypress</span>
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>FM 529</span>
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>FM 1960 / 77064</span>
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Fry Road / I-10</span>
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Katy</span>
+        <span class="zone-chip"><span class="dot-ic"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>Spring</span>
+      </div>
+      <p class="zones-note">¿No ves tu zona? <a href="https://wa.me/18322533555?text=Hola%2C%20%C2%BFatienden%20en%20mi%20zona%3F" target="_blank" rel="noopener">Escríbenos y lo confirmamos →</a></p>
+    </div>
+  </section>
+
+  <section class="testimonials" id="testimonios">
+    <div class="section-inner">
+      <!-- Reemplazar con tarjetas reales: foto, nombre del dueño, nombre del restaurante, cita corta -->
+    </div>
+  </section>
+
+  <section class="faq" id="preguntas">
+    <div class="section-inner">
+      <p class="section-tag">Preguntas frecuentes</p>
+      <h2>Lo que todo dueño<br>nos pregunta.</h2>
+      <p class="lead">Respuestas directas, sin letra pequeña.</p>
+      <div class="faq-list">
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>¿Necesito internet para usar TuPOS?</span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Sí, necesitas WiFi o datos móviles para procesar pagos con tarjeta. Si tu restaurante no tiene WiFi estable, te ayudamos a configurar una opción con datos móviles para que nunca te quedes sin cobrar.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>¿Qué pasa si el sistema falla o tengo un problema?</span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Nos escribes por WhatsApp y te respondemos en español, normalmente en minutos. No hay que llamar a un call center ni esperar en línea.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>¿La impresora de tickets va incluida?</span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Sí, el paquete de hardware incluye la tablet y la impresora de tickets/cocina. Se instalan y configuran juntas el mismo día.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>¿Puedo ver mis ventas y reportes del día?</span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Sí, desde la misma tablet ves tus ventas del día, productos más vendidos y el total que vas a recibir en tu cuenta. Todo en español y fácil de leer.</p></div>
+        </div>
+        <div class="faq-item" data-open="false">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>Si no cobran mensualidad, ¿cómo ganan dinero?</span>
+            <svg class="chev" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-a"><p>Cobramos una comisión pequeña (0.5%) solo sobre lo que vendes con tarjeta — mucho menos que el 2.6%+ que cobran Square, Toast o Clover además de su mensualidad. Si tú no vendes, nosotros tampoco cobramos.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-band">
+    <h2>Empieza hoy.<br>Sin riesgos.</h2>
+    <p>Tu primera instalación es gratuita. Te la instalamos nosotros, en tu restaurante, en 30 minutos.</p>
+    <a class="btn-white" href="https://wa.me/18322533555?text=Hola%2C%20quiero%20instalar%20TuPOS%20en%20mi%20restaurante." target="_blank" rel="noopener">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#C2602A"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.549 4.12 1.512 5.855L0 24l6.335-1.493A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.875 9.875 0 01-5.031-1.374l-.361-.214-3.741.882.936-3.632-.235-.374A9.856 9.856 0 012.118 12C2.118 6.533 6.533 2.118 12 2.118S21.882 6.533 21.882 12 17.467 21.882 12 21.882z"/></svg>
+      Escríbenos por WhatsApp
+    </a>
+  </section>
+
+  <section class="contact" id="contacto">
+    <div class="section-inner">
+      <p class="section-tag">Contáctanos</p>
+      <h2>¿Tienes preguntas?<br>Te respondemos.</h2>
+      <p class="lead">Sin presión, sin vendedores. Solo una conversación en español sobre lo que necesita tu negocio.</p>
+      <div class="contact-options">
+        <div class="contact-card">
+          <div class="contact-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <h4>WhatsApp</h4>
+          <p>La forma más rápida.<br>Te respondemos en minutos.</p>
+          <a class="link-cta" href="https://wa.me/18322533555?text=Hola%2C%20tengo%20una%20pregunta%20sobre%20TuPOS." target="_blank" rel="noopener">+1 (832) 253-3555 →</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <h4>Houston, TX</h4>
+          <p>Atendemos toda el área metropolitana de Houston y zonas cercanas.</p>
+          <a class="link-cta" href="#zonas">Ver zonas cubiertas →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="f-logo">Tu<span>POS</span></div>
+    <p>© 2025 TuPOS · Houston, TX · Todos los derechos reservados</p>
+    <nav>
+      <a href="#beneficios">Beneficios</a>
+      <a href="#como-funciona">Cómo funciona</a>
+      <a href="#comparacion">Comparación</a>
+      <a href="#preguntas">Preguntas</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+  </footer>
+
+  <a class="wa-float" href="https://wa.me/18322533555?text=Hola%2C%20vi%20la%20p%C3%A1gina%20de%20TuPOS%20y%20tengo%20una%20pregunta." target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.549 4.12 1.512 5.855L0 24l6.335-1.493A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.882a9.875 9.875 0 01-5.031-1.374l-.361-.214-3.741.882.936-3.632-.235-.374A9.856 9.856 0 012.118 12C2.118 6.533 6.533 2.118 12 2.118S21.882 6.533 21.882 12 17.467 21.882 12 21.882z"/>
+    </svg>
+  </a>
+
+  <script>
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.getAttribute('data-open') === 'true';
+      document.querySelectorAll('.faq-item').forEach(i => i.setAttribute('data-open', 'false'));
+      item.setAttribute('data-open', isOpen ? 'false' : 'true');
+    }
+
+    function fmtUSD(n) {
+      return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function calcUpdate() {
+      const ventas = parseFloat(document.getElementById('calc-ventas').value);
+      const ticket = parseFloat(document.getElementById('calc-ticket').value);
+      const nTrans = ventas / ticket;
+
+      document.getElementById('calc-ventas-val').textContent = fmtUSD(ventas) + '/mes';
+      document.getElementById('calc-ticket-val').textContent = '$' + ticket;
+
+      // TuPOS = Stripe Terminal (2.7% + $0.05) + fee TuPOS (0.15% + $0.05), software $0/mes
+      const tupos = ventas * 0.0285 + nTrans * 0.10;
+
+      // Square plan Free: 2.6% + $0.15 en persona, software $0/mes
+      const square = ventas * 0.026 + nTrans * 0.15;
+
+      // Toast Starter Kit: 3.09% + $0.15 en persona, software $0/mes (tasa alta a cambio de hardware gratis)
+      const toast = ventas * 0.0309 + nTrans * 0.15;
+
+      document.getElementById('calc-tupos').textContent = fmtUSD(tupos);
+      document.getElementById('calc-square').textContent = fmtUSD(square);
+      document.getElementById('calc-toast').textContent = fmtUSD(toast);
+      document.getElementById('calc-savings-toast').textContent = fmtUSD(Math.max(0, toast - tupos));
+    }
+
+    calcUpdate();
+  </script>
+
+</body>
+</html>
